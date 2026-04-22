@@ -5,6 +5,32 @@ const recommendationForm = document.getElementById('recommendation-form');
 const itemsContainer = document.getElementById('items');
 const emptyState = document.getElementById('empty-state');
 const recommendationEl = document.getElementById('recommendation');
+const previewModeEl = document.getElementById('preview-mode');
+const EMPTY_IMAGE_DATA_URI =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+const previewSlots = {
+  top: {
+    imageEl: document.getElementById('preview-top-image'),
+    textEl: document.getElementById('preview-top-text'),
+    emptyText: 'No top selected.'
+  },
+  bottom: {
+    imageEl: document.getElementById('preview-bottom-image'),
+    textEl: document.getElementById('preview-bottom-text'),
+    emptyText: 'No bottom selected.'
+  },
+  footwear: {
+    imageEl: document.getElementById('preview-footwear-image'),
+    textEl: document.getElementById('preview-footwear-text'),
+    emptyText: 'No shoes selected.'
+  },
+  accessory: {
+    imageEl: document.getElementById('preview-accessory-image'),
+    textEl: document.getElementById('preview-accessory-text'),
+    emptyText: 'No accessory selected.'
+  }
+};
 
 const colorFamilies = {
   red: ['red', 'burgundy', 'maroon', 'crimson'],
@@ -33,7 +59,15 @@ const complementaryFamilies = {
 };
 
 let items = loadItems();
+let previewSelection = {
+  top: null,
+  bottom: null,
+  footwear: null,
+  accessory: null
+};
+
 renderItems();
+renderPreview();
 
 itemForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -74,7 +108,10 @@ recommendationForm.addEventListener('submit', (event) => {
     return;
   }
 
-  recommendationEl.innerHTML = result;
+  recommendationEl.innerHTML = result.html;
+  previewModeEl.textContent = 'Showing recommended outfit preview.';
+  previewSelection = mapItemsToPreviewSlots([...result.main, ...result.extras]);
+  renderPreview();
 });
 
 function getValue(id) {
@@ -107,19 +144,31 @@ function renderItems() {
       .join('');
 
     node.innerHTML = `
-      <img src="${item.image || ''}" alt="${escapeHtml(item.name)}" />
+      <img src="${item.image || EMPTY_IMAGE_DATA_URI}" alt="${escapeHtml(item.name)}" />
       <div class="item-content">
         <div class="item-title">${escapeHtml(item.name)}</div>
         <div>Color: ${escapeHtml(item.color)}</div>
         <div class="badges">${tags}</div>
-        <button class="delete-btn" data-id="${item.id}" type="button">Delete</button>
+        <div class="item-actions">
+          <button class="preview-btn" data-id="${item.id}" type="button">Preview</button>
+          <button class="delete-btn" data-id="${item.id}" type="button">Delete</button>
+        </div>
       </div>
     `;
 
+    node.querySelector('.preview-btn').addEventListener('click', () => {
+      previewModeEl.textContent = `Showing manual preview for: ${item.name}`;
+      const slot = slotForCategory(item.category);
+      previewSelection[slot] = item;
+      renderPreview();
+    });
+
     node.querySelector('.delete-btn').addEventListener('click', () => {
       items = items.filter((existingItem) => existingItem.id !== item.id);
+      clearDeletedItemFromPreview(item.id);
       persistItems();
       renderItems();
+      renderPreview();
     });
 
     itemsContainer.appendChild(node);
@@ -138,7 +187,11 @@ function recommendOutfit({ occasion, season, style }) {
   if (dresses.length > 0) {
     const dress = dresses[0];
     const extras = pickExtras(candidates, dress.color);
-    return renderRecommendation({ main: [dress], extras });
+    return {
+      main: [dress],
+      extras,
+      html: renderRecommendation({ main: [dress], extras })
+    };
   }
 
   const tops = candidates.filter((item) => item.category === 'top');
@@ -151,7 +204,11 @@ function recommendOutfit({ occasion, season, style }) {
   const bottom = pickColorPair(top, bottoms) || bottoms[0];
   const extras = pickExtras(candidates, top.color);
 
-  return renderRecommendation({ main: [top, bottom], extras });
+  return {
+    main: [top, bottom],
+    extras,
+    html: renderRecommendation({ main: [top, bottom], extras })
+  };
 }
 
 function pickColorPair(top, bottoms) {
@@ -226,4 +283,66 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
+}
+
+function slotForCategory(category) {
+  if (category === 'footwear') return 'footwear';
+  if (category === 'accessory') return 'accessory';
+  if (category === 'bottom' || category === 'dress') return 'bottom';
+  return 'top';
+}
+
+function mapItemsToPreviewSlots(selectedItems) {
+  const next = {
+    top: null,
+    bottom: null,
+    footwear: null,
+    accessory: null
+  };
+
+  for (const item of selectedItems) {
+    const slot = slotForCategory(item.category);
+
+    if (!next[slot]) {
+      next[slot] = item;
+    }
+
+    if (item.category === 'dress') {
+      next.top = item;
+      next.bottom = item;
+    }
+  }
+
+  return next;
+}
+
+function clearDeletedItemFromPreview(itemId) {
+  for (const [slot, item] of Object.entries(previewSelection)) {
+    if (item && item.id === itemId) {
+      previewSelection[slot] = null;
+    }
+  }
+}
+
+function renderPreview() {
+  for (const [slot, config] of Object.entries(previewSlots)) {
+    const selectedItem = previewSelection[slot];
+
+    if (!selectedItem) {
+      config.imageEl.style.display = 'none';
+      config.imageEl.src = '';
+      config.textEl.textContent = config.emptyText;
+      continue;
+    }
+
+    if (selectedItem.image) {
+      config.imageEl.style.display = 'block';
+      config.imageEl.src = selectedItem.image;
+    } else {
+      config.imageEl.style.display = 'none';
+      config.imageEl.src = '';
+    }
+
+    config.textEl.textContent = `${selectedItem.name} (${selectedItem.category})`;
+  }
 }
