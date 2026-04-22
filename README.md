@@ -6,6 +6,7 @@ StyleSnap is a lightweight wardrobe assistant that helps you catalog your clothi
 
 - Add clothing items with photo, category, color, season, style, and preferred occasions.
 - Store your closet locally in the browser (no backend required).
+- Display a homepage style lookbook with fashion model photography.
 - Generate outfit suggestions based on:
   - occasion
   - season
