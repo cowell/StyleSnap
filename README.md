@@ -1,6 +1,6 @@
-# StyleSnap
+# Ensemble Engine
 
-StyleSnap is a lightweight wardrobe assistant that helps you catalog your clothing and generate outfit recommendations.
+Ensemble Engine is a lightweight wardrobe assistant that helps you catalog your clothing and generate outfit recommendations.
 
 ## What it does
 
@@ -18,7 +18,7 @@ StyleSnap is a lightweight wardrobe assistant that helps you catalog your clothi
 
 You **do not** need a full web builder for this app.
 
-Because StyleSnap is a static site (`index.html`, `styles.css`, `app.js`), the simplest approach is to upload these files to a static hosting service:
+Because Ensemble Engine is a static site (`index.html`, `styles.css`, `app.js`), the simplest approach is to upload these files to a static hosting service:
 
 ### Option A (easiest): Netlify Drop
 

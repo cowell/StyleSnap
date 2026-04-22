@@ -1,4 +1,5 @@
-const STORAGE_KEY = 'stylesnap-items-v1';
+const STORAGE_KEY = 'ensemble-engine-items-v1';
+const LEGACY_STORAGE_KEYS = ['closetmuse-items-v1', 'stylesnap-items-v1'];
 
 const itemForm = document.getElementById('item-form');
 const recommendationForm = document.getElementById('recommendation-form');
@@ -120,7 +121,9 @@ function getValue(id) {
 
 function loadItems() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw =
+      localStorage.getItem(STORAGE_KEY) ||
+      LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
