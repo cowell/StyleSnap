@@ -8,6 +8,8 @@ Ensemble Engine is a lightweight wardrobe assistant that helps you catalog your 
 - Store your closet locally in the browser (no backend required).
 - Display a homepage style lookbook with fashion model photography.
 - Preview outfit pieces in a wearable top-to-bottom layout (top, bottom/dress, shoes, accessory).
+- Filter/search your closet and track clean vs laundry status per item.
+- Save favorite outfit recommendations and reload them instantly in the preview.
 - Generate outfit suggestions based on:
   - occasion
   - season
