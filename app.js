@@ -80,6 +80,9 @@ renderItems();
 renderPreview();
 renderSavedOutfits();
 
+renderItems();
+renderPreview();
+
 itemForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
@@ -114,6 +117,8 @@ recommendationForm.addEventListener('submit', (event) => {
   const cleanOnly = document.getElementById('clean-only').checked;
 
   const result = recommendOutfit({ occasion, season, style, cleanOnly });
+
+  const result = recommendOutfit({ occasion, season, style });
 
   recommendationEl.classList.remove('empty');
   if (!result) {
@@ -153,6 +158,9 @@ saveOutfitBtn.addEventListener('click', () => {
   element.addEventListener('change', renderItems);
 });
 
+  renderPreview();
+});
+
 function getValue(id) {
   return document.getElementById(id).value.trim();
 }
@@ -167,6 +175,7 @@ function loadItems() {
       ...item,
       isClean: item.isClean ?? true
     }));
+    return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
@@ -209,6 +218,11 @@ function renderItems() {
   emptyState.style.display = filteredItems.length ? 'none' : 'block';
 
   for (const item of filteredItems) {
+function renderItems() {
+  itemsContainer.innerHTML = '';
+  emptyState.style.display = items.length ? 'none' : 'block';
+
+  for (const item of items) {
     const node = document.createElement('article');
     node.className = 'item';
 
@@ -257,6 +271,9 @@ function renderItems() {
       item.isClean = !item.isClean;
       persistItems();
       renderItems();
+      persistItems();
+      renderItems();
+      renderPreview();
     });
 
     itemsContainer.appendChild(node);
@@ -264,6 +281,7 @@ function renderItems() {
 }
 
 function recommendOutfit({ occasion, season, style, cleanOnly }) {
+function recommendOutfit({ occasion, season, style }) {
   const candidates = items.filter(
     (item) =>
       (item.season === 'all' || item.season === season) &&
