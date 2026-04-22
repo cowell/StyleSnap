@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StyleSnap</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>StyleSnap</h1>
+      <p>
+        Photograph your wardrobe, catalog your closet, and get personalized outfit ideas in seconds.
+      </p>
+      <div class="hero-lookbook" aria-label="Style inspiration gallery">
+        <img
+          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80"
+          alt="Model wearing a modern streetwear outfit"
+          loading="lazy"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
+          alt="Model in a stylish neutral-toned look"
+          loading="lazy"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1495385794356-15371f348c31?auto=format&fit=crop&w=800&q=80"
+          alt="Model in a polished city fashion outfit"
+          loading="lazy"
+        />
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Add Clothing Item</h2>
+        <form id="item-form" class="grid-form">
+          <label>
+            Item name
+            <input id="name" required maxlength="60" placeholder="e.g., Navy Blazer" />
+          </label>
+
+          <label>
+            Category
+            <select id="category" required>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="dress">Dress</option>
+              <option value="outerwear">Outerwear</option>
+              <option value="footwear">Footwear</option>
+              <option value="accessory">Accessory</option>
+            </select>
+          </label>
+
+          <label>
+            Color
+            <input id="color" required placeholder="e.g., Blue" />
+          </label>
+
+          <label>
+            Season
+            <select id="season" required>
+              <option value="all">All season</option>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+              <option value="winter">Winter</option>
+            </select>
+          </label>
+
+          <label>
+            Style
+            <select id="style" required>
+              <option value="casual">Casual</option>
+              <option value="business">Business</option>
+              <option value="formal">Formal</option>
+              <option value="athleisure">Athleisure</option>
+              <option value="streetwear">Streetwear</option>
+            </select>
+          </label>
+
+          <label>
+            Best occasions (comma-separated)
+            <input id="occasions" placeholder="work, date night, brunch" />
+          </label>
+
+          <label class="wide">
+            Photo
+            <input id="photo" type="file" accept="image/*" />
+          </label>
+
+          <button type="submit" class="wide">Save item</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Get Outfit Recommendation</h2>
+        <form id="recommendation-form" class="grid-form">
+          <label>
+            Occasion
+            <input id="target-occasion" placeholder="e.g., office" required />
+          </label>
+
+          <label>
+            Season
+            <select id="target-season" required>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+              <option value="winter">Winter</option>
+            </select>
+          </label>
+
+          <label>
+            Preferred style
+            <select id="target-style" required>
+              <option value="casual">Casual</option>
+              <option value="business">Business</option>
+              <option value="formal">Formal</option>
+              <option value="athleisure">Athleisure</option>
+              <option value="streetwear">Streetwear</option>
+            </select>
+          </label>
+
+          <button type="submit" class="wide">Suggest outfit</button>
+        </form>
+
+        <div id="recommendation" class="recommendation empty">
+          Add items to your closet, then request a recommendation.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Outfit Preview</h2>
+        <p id="preview-mode" class="muted">
+          Preview individual items, or generate a recommendation to auto-fill this layout.
+        </p>
+        <div class="outfit-preview">
+          <div class="preview-slot" data-slot="top">
+            <h3>Top / Outerwear</h3>
+            <img id="preview-top-image" alt="Top or outerwear preview slot" />
+            <p id="preview-top-text">No top selected.</p>
+          </div>
+
+          <div class="preview-slot" data-slot="bottom">
+            <h3>Bottom / Dress</h3>
+            <img id="preview-bottom-image" alt="Bottom or dress preview slot" />
+            <p id="preview-bottom-text">No bottom selected.</p>
+          </div>
+
+          <div class="preview-slot" data-slot="footwear">
+            <h3>Shoes</h3>
+            <img id="preview-footwear-image" alt="Shoes preview slot" />
+            <p id="preview-footwear-text">No shoes selected.</p>
+          </div>
+
+          <div class="preview-slot" data-slot="accessory">
+            <h3>Accessory</h3>
+            <img id="preview-accessory-image" alt="Accessory preview slot" />
+            <p id="preview-accessory-text">No accessory selected.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel wide-panel">
+        <h2>Your Closet</h2>
+        <p id="empty-state" class="muted">No items yet. Add your first piece above.</p>
+        <div id="items" class="item-grid"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
